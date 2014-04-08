@@ -4,9 +4,6 @@
 using namespace std;
 using namespace cprocessing;
 
-//Ray Tracing & Photon Mapping
-//Grant Schindler, 2007
-
 // ----- Scene Description -----
 int szImg = 512;                  //Image Size
 int nrTypes = 2;                  //2 Object Types (Sphere = 0, Plane = 1)
@@ -28,7 +25,7 @@ vector<vector<int> > numPhotons = {{0,0},{0,0,0,0,0}};              //Photon Cou
 vector<vector<vector<vector<vector<float> > > > > photons(2,
     vector<vector<vector<vector<float> > > >(5, vector<vector<vector<float> > >(5000,
         vector<vector<float> >(3, vector<float>(3))))); //Allocated Memory for Per-Object Photon Info
-// vector<vector<float> > photons[2][5][5000][3][3]; //Allocated Memory for Per-Object Photon Info
+
 // ----- Raytracing Globals -----
 bool gIntersect = false;       //For Latest Raytracing Call... Was Anything Intersected by the Ray?
 int gType;                        //... Type of the Intersected Object (Sphere or Plane)
@@ -37,30 +34,10 @@ float gSqDist, gDist = -1.0;      //... Distance from Ray Origin to Intersection
 vector<float> gPoint = {0.0, 0.0, 0.0}; //... Point At Which the Ray Intersected the Object
 
 
-//---------------------------------------------------------------------------------------
-// User Interaction and Display ---------------------------------------------------------
-//---------------------------------------------------------------------------------------
 bool empty = true;
-bool view3D = false; //Stop Drawing, Switch Views
-//PFont font; PImage img1, img2, img3;  //Fonts, Images
 int pRow, pCol, pIteration, pMax;     //Pixel Rendering Order
 bool odd(int x) {return x % 2 != 0;}
 
-//---------------------------------------------------------------------------------------
-//Mouse and Keyboard Interaction --------------------------------------------------------
-//---------------------------------------------------------------------------------------
-int prevMouseX = -9999, prevMouseY = -9999, sphereIndex = -1;
-float s = 130.0; //Arbitary Constant Through Experimentation
-bool mouseDragging = false;
-void mouseReleased() {prevMouseX = -9999; prevMouseY = -9999; mouseDragging = false;}
-
-
-//---------------------------------------------------------------------------------------
-//Vector Operations ---------------------------------------------------------------------
-//---------------------------------------------------------------------------------------
-//float max(float a, float b) {
-//    return a <= b ? b : a;
-//}
 
 float min(float a, float b) {
     return a <= b ? a : b;
@@ -281,7 +258,7 @@ vector<float> computePixelColor(float x, float y){
 }
 
 void drawPhoton(vector<float> rgb, vector<float> p){           //Photon Visualization
-    if (view3D && p[2] > 0.0){                       //Only Draw if In Front of Camera
+    if (p[2] > 0.0){                       //Only Draw if In Front of Camera
         int x = (szImg/2) + (int)(szImg *  p[0]/p[2]); //Project 3D Points into Scene
         int y = (szImg/2) + (int)(szImg * -p[1]/p[2]); //Don't Draw Outside Image
         if (y <= szImg) {stroke(255.0*rgb[0],255.0*rgb[1],255.0*rgb[2]); point(x,y);}}
@@ -293,7 +270,7 @@ void emitPhotons(){
         for (int i = 0; i < nrObjects[t]; i++)
             numPhotons[t][i] = 0;
 
-    for (int i = 0; i < (view3D ? nrPhotons * 3.0 : nrPhotons); i++){ //Draw 3x Photons For Usability
+    for (int i = 0; i < nrPhotons * 3.0; i++){
         int bounces = 1;
         vector<float> rgb = {1.0,1.0,1.0};               //Initial Photon Color is White
         vector<float> ray = normalize3( rand3(1.0) );    //Randomize Direction of Photon Emission
@@ -340,87 +317,42 @@ void drawInterface() {
 //    rect(282,519,33,33); image(img3,283,520);
 }
 
+void switchToMode(char i, int x){
 
-
-void resetRender(){ //Reset Rendering Variables
-    pRow=0; pCol=0; pIteration=1; pMax=2;
-    //    frameRate(9999);
-    empty=true; if (lightPhotons && !view3D) emitPhotons();}
-
-void switchToMode(char i, int x){ // Switch Between Raytracing, Photon Mapping Views
-    if      (i=='1' || x<230) {view3D = false; lightPhotons = false; resetRender(); drawInterface();}
-    else if (i=='2' || x<283) {view3D = false; lightPhotons = true;  resetRender(); drawInterface();}
-    else if (i=='3' || x<513) {view3D = true; resetRender(); drawInterface();}
-}
-
-void keyPressed() {switchToMode(key,9999);}
-
-void mousePressed(){
-    sphereIndex = 2; //Click Spheres
-    vector<float> mouse3 = {(mouseX - szImg/2)/s, -(mouseY - szImg/2)/s, 0.5f*(spheres[0][2] + spheres[1][2])};
-    if (gatedSqDist3(mouse3,spheres[0],spheres[0][3])) sphereIndex = 0;
-    else if (gatedSqDist3(mouse3,spheres[1],spheres[1][3])) sphereIndex = 1;
-    if (mouseY > szImg) switchToMode('0', mouseX); //Click Buttons
-}
-
-void mouseDragged(){
-    if (prevMouseX > -9999 && sphereIndex > -1){
-        if (sphereIndex < nrObjects[0]){ //Drag Sphere
-            spheres[sphereIndex][0] += (mouseX - prevMouseX)/s;
-            spheres[sphereIndex][1] -= (mouseY - prevMouseY)/s;}
-        else{ //Drag Light
-            Light[0] += (mouseX - prevMouseX)/s; Light[0] = constrain(Light[0],-1.4f,1.4f);
-            Light[1] -= (mouseY - prevMouseY)/s; Light[1] = constrain(Light[1],-0.4f,1.2f);}
-        resetRender();}
-    prevMouseX = mouseX; prevMouseY = mouseY; mouseDragging = true;
+    drawInterface();
 }
 
 void render(){ //Render Several Lines of Pixels at Once Before Drawing
     int x,y,iterations = 0;
     vector<float> rgb = {0.0,0.0,0.0};
 
-    while (iterations < (mouseDragging ? 1024 : cprocessing::max(pMax, 256) )){
+    if (pCol >= pMax) {pRow++; pCol = 0;
+        if (pRow >= pMax) {pIteration++; pRow = 0; pMax = int(pow(2,pIteration));}}
+    bool pNeedsDrawing = (pIteration == 1 || odd(pRow) || (!odd(pRow) && odd(pCol)));
+    x = pCol * (szImg/pMax); y = pRow * (szImg/pMax);
+    pCol++;
 
-        //Render Pixels Out of Order With Increasing Resolution: 2x2, 4x4, 16x16... 512x512
-        if (pCol >= pMax) {pRow++; pCol = 0;
-            if (pRow >= pMax) {pIteration++; pRow = 0; pMax = int(pow(2,pIteration));}}
-        bool pNeedsDrawing = (pIteration == 1 || odd(pRow) || (!odd(pRow) && odd(pCol)));
-        x = pCol * (szImg/pMax); y = pRow * (szImg/pMax);
-        pCol++;
+    if (pNeedsDrawing){
+        iterations++;
+        rgb = mul3c( computePixelColor(x,y), 255.0);               //All the Magic Happens in Here!
+        stroke(rgb[0],rgb[1],rgb[2]); cprocessing::fill(rgb[0],rgb[1],rgb[2]);  //Stroke & Fill
+        rect(x,y,(szImg/pMax)-1,(szImg/pMax)-1);}                  //Draw the Possibly Enlarged Pixel
 
-        if (pNeedsDrawing){
-            iterations++;
-            rgb = mul3c( computePixelColor(x,y), 255.0);               //All the Magic Happens in Here!
-            stroke(rgb[0],rgb[1],rgb[2]); cprocessing::fill(rgb[0],rgb[1],rgb[2]);  //Stroke & Fill
-            rect(x,y,(szImg/pMax)-1,(szImg/pMax)-1);}                  //Draw the Possibly Enlarged Pixel
-    }
     if (pRow == szImg-1) {empty = false;}
 }
 
 
-
-
-
 void setup(){
     size(szImg,szImg + 48);
-//    frameRate(9999);
-//    font = loadFont("Helvetica-Bold-12.vlw");
     emitPhotons();
-    resetRender();
-    drawInterface();
 }
 
 void draw(){
-    if (view3D){
+
         if (empty){
             stroke(0); fill(0); rect(0,0,szImg-1,szImg-1); //Black Out Drawing Area
             emitPhotons(); empty = false;
-//            frameRate(10);
         }
-    } //Emit & Draw Photons
-    else{
-        if (empty) render();
-//        else frameRate(10);
-    } //Only Draw if Image Not Fully Rendered
+
 }
 
