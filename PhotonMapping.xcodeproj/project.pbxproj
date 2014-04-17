@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00314C1318F49931003AE324 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00314C1218F49931003AE324 /* main.cpp */; };
 		00754E3E18E8DAEA00F68FFA /* PhotonMapping.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */; };
 		0098B3D718E9099D00559C32 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B3D518E9099D00559C32 /* GLUT.framework */; };
 		0098B3D818E9099D00559C32 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B3D618E9099D00559C32 /* OpenGL.framework */; };
-		0098B3DA18EB1AB800559C32 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0098B3D918EB1AB800559C32 /* test.cpp */; };
-		0098B45118EB319000559C32 /* libcprocessing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B44018EB1AE300559C32 /* libcprocessing.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,112 +27,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00314C1218F49931003AE324 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		00754E3818E8DAEA00F68FFA /* PhotonMapping */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PhotonMapping; sourceTree = BUILT_PRODUCTS_DIR; };
 		00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = PhotonMapping.1; sourceTree = "<group>"; };
 		0098B3D518E9099D00559C32 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		0098B3D618E9099D00559C32 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		0098B3D918EB1AB800559C32 /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
-		0098B3DC18EB1AE300559C32 /* attributes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = attributes.cpp; sourceTree = "<group>"; };
-		0098B3DD18EB1AE300559C32 /* cprocessing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cprocessing.cpp; sourceTree = "<group>"; };
-		0098B3DE18EB1AE300559C32 /* cprocessing.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cprocessing.hpp; sourceTree = "<group>"; };
-		0098B3DF18EB1AE300559C32 /* draw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = draw.cpp; sourceTree = "<group>"; };
-		0098B3E018EB1AE300559C32 /* environment.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = environment.cpp; sourceTree = "<group>"; };
-		0098B3E318EB1AE300559C32 /* 3Dmesh */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = 3Dmesh; sourceTree = "<group>"; };
-		0098B3E418EB1AE300559C32 /* arcball.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = arcball.hpp; sourceTree = "<group>"; };
-		0098B3E518EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B3E618EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B3E718EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B3E818EB1AE300559C32 /* mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mesh.cpp; sourceTree = "<group>"; };
-		0098B3E918EB1AE300559C32 /* mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = mesh.hpp; sourceTree = "<group>"; };
-		0098B3EA18EB1AE300559C32 /* mesh.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = mesh.o; sourceTree = "<group>"; };
-		0098B3EC18EB1AE300559C32 /* annotation */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = annotation; sourceTree = "<group>"; };
-		0098B3ED18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B3EE18EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B3EF18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B3F118EB1AE300559C32 /* box */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = box; sourceTree = "<group>"; };
-		0098B3F218EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B3F318EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B3F418EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B3F618EB1AE300559C32 /* colormode */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = colormode; sourceTree = "<group>"; };
-		0098B3F718EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B3F818EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B3F918EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B3FB18EB1AE300559C32 /* cylinderline */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = cylinderline; sourceTree = "<group>"; };
-		0098B3FC18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B3FD18EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B3FE18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B40018EB1AE300559C32 /* ellipse */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ellipse; sourceTree = "<group>"; };
-		0098B40118EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B40218EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B40318EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B40518EB1AE300559C32 /* ellipsemode */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ellipsemode; sourceTree = "<group>"; };
-		0098B40618EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B40718EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B40818EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B40A18EB1AE300559C32 /* keyboard */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = keyboard; sourceTree = "<group>"; };
-		0098B40B18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B40C18EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B40D18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B40E18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B41018EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B41118EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B41218EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B41318EB1AE300559C32 /* mathtest */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mathtest; sourceTree = "<group>"; };
-		0098B41518EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B41618EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B41718EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B41818EB1AE300559C32 /* pimage */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = pimage; sourceTree = "<group>"; };
-		0098B41A18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B41B18EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B41C18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B41D18EB1AE300559C32 /* randomrects */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = randomrects; sourceTree = "<group>"; };
-		0098B41F18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B42018EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B42118EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B42218EB1AE300559C32 /* rectangle */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = rectangle; sourceTree = "<group>"; };
-		0098B42418EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B42518EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B42618EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B42718EB1AE300559C32 /* Makefile.osx */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.osx; sourceTree = "<group>"; };
-		0098B42818EB1AE300559C32 /* scribble */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = scribble; sourceTree = "<group>"; };
-		0098B42A18EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B42B18EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B42C18EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B42D18EB1AE300559C32 /* sphere */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = sphere; sourceTree = "<group>"; };
-		0098B42E18EB1AE300559C32 /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
-		0098B42F18EB1AE300559C32 /* keypressed.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = keypressed.cpp; sourceTree = "<group>"; };
-		0098B43018EB1AE300559C32 /* keyreleased.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = keyreleased.cpp; sourceTree = "<group>"; };
-		0098B43118EB1AE300559C32 /* lights.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lights.cpp; sourceTree = "<group>"; };
-		0098B43218EB1AE300559C32 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0098B43318EB1AE300559C32 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0098B43418EB1AE300559C32 /* mousedragged.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mousedragged.cpp; sourceTree = "<group>"; };
-		0098B43518EB1AE300559C32 /* mousemoved.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mousemoved.cpp; sourceTree = "<group>"; };
-		0098B43618EB1AE300559C32 /* mousepressed.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mousepressed.cpp; sourceTree = "<group>"; };
-		0098B43718EB1AE300559C32 /* mousereleased.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mousereleased.cpp; sourceTree = "<group>"; };
-		0098B43918EB1AE300559C32 /* attributes.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = attributes.o; sourceTree = "<group>"; };
-		0098B43A18EB1AE300559C32 /* cprocessing.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = cprocessing.o; sourceTree = "<group>"; };
-		0098B43B18EB1AE300559C32 /* draw.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = draw.o; sourceTree = "<group>"; };
-		0098B43C18EB1AE300559C32 /* environment.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = environment.o; sourceTree = "<group>"; };
-		0098B43D18EB1AE300559C32 /* image.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = image.o; sourceTree = "<group>"; };
-		0098B43E18EB1AE300559C32 /* keypressed.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = keypressed.o; sourceTree = "<group>"; };
-		0098B43F18EB1AE300559C32 /* keyreleased.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = keyreleased.o; sourceTree = "<group>"; };
-		0098B44018EB1AE300559C32 /* libcprocessing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcprocessing.a; sourceTree = "<group>"; };
-		0098B44118EB1AE300559C32 /* lights.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = lights.o; sourceTree = "<group>"; };
-		0098B44218EB1AE300559C32 /* main.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = main.o; sourceTree = "<group>"; };
-		0098B44318EB1AE300559C32 /* mousedragged.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = mousedragged.o; sourceTree = "<group>"; };
-		0098B44418EB1AE300559C32 /* mousemoved.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = mousemoved.o; sourceTree = "<group>"; };
-		0098B44518EB1AE300559C32 /* mousepressed.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = mousepressed.o; sourceTree = "<group>"; };
-		0098B44618EB1AE300559C32 /* mousereleased.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = mousereleased.o; sourceTree = "<group>"; };
-		0098B44718EB1AE300559C32 /* primitives.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = primitives.o; sourceTree = "<group>"; };
-		0098B44818EB1AE300559C32 /* README.TXT */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.TXT; sourceTree = "<group>"; };
-		0098B44918EB1AE300559C32 /* setup.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = setup.o; sourceTree = "<group>"; };
-		0098B44A18EB1AE300559C32 /* shapes.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = shapes.o; sourceTree = "<group>"; };
-		0098B44B18EB1AE300559C32 /* transformations.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = transformations.o; sourceTree = "<group>"; };
-		0098B44C18EB1AE300559C32 /* primitives.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = primitives.cpp; sourceTree = "<group>"; };
-		0098B44D18EB1AE300559C32 /* pvector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = pvector.hpp; sourceTree = "<group>"; };
-		0098B44E18EB1AE300559C32 /* setup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = setup.cpp; sourceTree = "<group>"; };
-		0098B44F18EB1AE300559C32 /* shapes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = shapes.cpp; sourceTree = "<group>"; };
-		0098B45018EB1AE300559C32 /* transformations.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = transformations.cpp; sourceTree = "<group>"; };
+		00A8C5BE18FD2532003B99DC /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,7 +41,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0098B45118EB319000559C32 /* libcprocessing.a in Frameworks */,
 				0098B3D718E9099D00559C32 /* GLUT.framework in Frameworks */,
 				0098B3D818E9099D00559C32 /* OpenGL.framework in Frameworks */,
 			);
@@ -153,7 +52,6 @@
 		00754E2F18E8DAEA00F68FFA = {
 			isa = PBXGroup;
 			children = (
-				0098B3DB18EB1AE300559C32 /* cprocessing */,
 				0098B3D518E9099D00559C32 /* GLUT.framework */,
 				0098B3D618E9099D00559C32 /* OpenGL.framework */,
 				00754E3A18E8DAEA00F68FFA /* PhotonMapping */,
@@ -172,247 +70,12 @@
 		00754E3A18E8DAEA00F68FFA /* PhotonMapping */ = {
 			isa = PBXGroup;
 			children = (
+				00314C1218F49931003AE324 /* main.cpp */,
+				00A8C5BE18FD2532003B99DC /* main.h */,
 				0098B3D918EB1AB800559C32 /* test.cpp */,
 				00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */,
 			);
 			path = PhotonMapping;
-			sourceTree = "<group>";
-		};
-		0098B3DB18EB1AE300559C32 /* cprocessing */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3DC18EB1AE300559C32 /* attributes.cpp */,
-				0098B3DD18EB1AE300559C32 /* cprocessing.cpp */,
-				0098B3DE18EB1AE300559C32 /* cprocessing.hpp */,
-				0098B3DF18EB1AE300559C32 /* draw.cpp */,
-				0098B3E018EB1AE300559C32 /* environment.cpp */,
-				0098B3E118EB1AE300559C32 /* examples */,
-				0098B42E18EB1AE300559C32 /* image.cpp */,
-				0098B42F18EB1AE300559C32 /* keypressed.cpp */,
-				0098B43018EB1AE300559C32 /* keyreleased.cpp */,
-				0098B43118EB1AE300559C32 /* lights.cpp */,
-				0098B43218EB1AE300559C32 /* main.cpp */,
-				0098B43318EB1AE300559C32 /* Makefile */,
-				0098B43418EB1AE300559C32 /* mousedragged.cpp */,
-				0098B43518EB1AE300559C32 /* mousemoved.cpp */,
-				0098B43618EB1AE300559C32 /* mousepressed.cpp */,
-				0098B43718EB1AE300559C32 /* mousereleased.cpp */,
-				0098B43818EB1AE300559C32 /* objects */,
-				0098B44C18EB1AE300559C32 /* primitives.cpp */,
-				0098B44D18EB1AE300559C32 /* pvector.hpp */,
-				0098B44E18EB1AE300559C32 /* setup.cpp */,
-				0098B44F18EB1AE300559C32 /* shapes.cpp */,
-				0098B45018EB1AE300559C32 /* transformations.cpp */,
-			);
-			name = cprocessing;
-			path = ../cprocessing;
-			sourceTree = "<group>";
-		};
-		0098B3E118EB1AE300559C32 /* examples */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3E218EB1AE300559C32 /* 3Dmesh */,
-				0098B3EB18EB1AE300559C32 /* annotation */,
-				0098B3F018EB1AE300559C32 /* box */,
-				0098B3F518EB1AE300559C32 /* colormode */,
-				0098B3FA18EB1AE300559C32 /* cylinderline */,
-				0098B3FF18EB1AE300559C32 /* ellipse */,
-				0098B40418EB1AE300559C32 /* ellipsemode */,
-				0098B40918EB1AE300559C32 /* keyboard */,
-				0098B40E18EB1AE300559C32 /* Makefile */,
-				0098B40F18EB1AE300559C32 /* mathtest */,
-				0098B41418EB1AE300559C32 /* pimage */,
-				0098B41918EB1AE300559C32 /* randomrects */,
-				0098B41E18EB1AE300559C32 /* rectangle */,
-				0098B42318EB1AE300559C32 /* scribble */,
-				0098B42918EB1AE300559C32 /* sphere */,
-			);
-			path = examples;
-			sourceTree = "<group>";
-		};
-		0098B3E218EB1AE300559C32 /* 3Dmesh */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3E318EB1AE300559C32 /* 3Dmesh */,
-				0098B3E418EB1AE300559C32 /* arcball.hpp */,
-				0098B3E518EB1AE300559C32 /* main.cpp */,
-				0098B3E618EB1AE300559C32 /* main.o */,
-				0098B3E718EB1AE300559C32 /* Makefile */,
-				0098B3E818EB1AE300559C32 /* mesh.cpp */,
-				0098B3E918EB1AE300559C32 /* mesh.hpp */,
-				0098B3EA18EB1AE300559C32 /* mesh.o */,
-			);
-			path = 3Dmesh;
-			sourceTree = "<group>";
-		};
-		0098B3EB18EB1AE300559C32 /* annotation */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3EC18EB1AE300559C32 /* annotation */,
-				0098B3ED18EB1AE300559C32 /* main.cpp */,
-				0098B3EE18EB1AE300559C32 /* main.o */,
-				0098B3EF18EB1AE300559C32 /* Makefile */,
-			);
-			path = annotation;
-			sourceTree = "<group>";
-		};
-		0098B3F018EB1AE300559C32 /* box */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3F118EB1AE300559C32 /* box */,
-				0098B3F218EB1AE300559C32 /* main.cpp */,
-				0098B3F318EB1AE300559C32 /* main.o */,
-				0098B3F418EB1AE300559C32 /* Makefile */,
-			);
-			path = box;
-			sourceTree = "<group>";
-		};
-		0098B3F518EB1AE300559C32 /* colormode */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3F618EB1AE300559C32 /* colormode */,
-				0098B3F718EB1AE300559C32 /* main.cpp */,
-				0098B3F818EB1AE300559C32 /* main.o */,
-				0098B3F918EB1AE300559C32 /* Makefile */,
-			);
-			path = colormode;
-			sourceTree = "<group>";
-		};
-		0098B3FA18EB1AE300559C32 /* cylinderline */ = {
-			isa = PBXGroup;
-			children = (
-				0098B3FB18EB1AE300559C32 /* cylinderline */,
-				0098B3FC18EB1AE300559C32 /* main.cpp */,
-				0098B3FD18EB1AE300559C32 /* main.o */,
-				0098B3FE18EB1AE300559C32 /* Makefile */,
-			);
-			path = cylinderline;
-			sourceTree = "<group>";
-		};
-		0098B3FF18EB1AE300559C32 /* ellipse */ = {
-			isa = PBXGroup;
-			children = (
-				0098B40018EB1AE300559C32 /* ellipse */,
-				0098B40118EB1AE300559C32 /* main.cpp */,
-				0098B40218EB1AE300559C32 /* main.o */,
-				0098B40318EB1AE300559C32 /* Makefile */,
-			);
-			path = ellipse;
-			sourceTree = "<group>";
-		};
-		0098B40418EB1AE300559C32 /* ellipsemode */ = {
-			isa = PBXGroup;
-			children = (
-				0098B40518EB1AE300559C32 /* ellipsemode */,
-				0098B40618EB1AE300559C32 /* main.cpp */,
-				0098B40718EB1AE300559C32 /* main.o */,
-				0098B40818EB1AE300559C32 /* Makefile */,
-			);
-			path = ellipsemode;
-			sourceTree = "<group>";
-		};
-		0098B40918EB1AE300559C32 /* keyboard */ = {
-			isa = PBXGroup;
-			children = (
-				0098B40A18EB1AE300559C32 /* keyboard */,
-				0098B40B18EB1AE300559C32 /* main.cpp */,
-				0098B40C18EB1AE300559C32 /* main.o */,
-				0098B40D18EB1AE300559C32 /* Makefile */,
-			);
-			path = keyboard;
-			sourceTree = "<group>";
-		};
-		0098B40F18EB1AE300559C32 /* mathtest */ = {
-			isa = PBXGroup;
-			children = (
-				0098B41018EB1AE300559C32 /* main.cpp */,
-				0098B41118EB1AE300559C32 /* main.o */,
-				0098B41218EB1AE300559C32 /* Makefile */,
-				0098B41318EB1AE300559C32 /* mathtest */,
-			);
-			path = mathtest;
-			sourceTree = "<group>";
-		};
-		0098B41418EB1AE300559C32 /* pimage */ = {
-			isa = PBXGroup;
-			children = (
-				0098B41518EB1AE300559C32 /* main.cpp */,
-				0098B41618EB1AE300559C32 /* main.o */,
-				0098B41718EB1AE300559C32 /* Makefile */,
-				0098B41818EB1AE300559C32 /* pimage */,
-			);
-			path = pimage;
-			sourceTree = "<group>";
-		};
-		0098B41918EB1AE300559C32 /* randomrects */ = {
-			isa = PBXGroup;
-			children = (
-				0098B41A18EB1AE300559C32 /* main.cpp */,
-				0098B41B18EB1AE300559C32 /* main.o */,
-				0098B41C18EB1AE300559C32 /* Makefile */,
-				0098B41D18EB1AE300559C32 /* randomrects */,
-			);
-			path = randomrects;
-			sourceTree = "<group>";
-		};
-		0098B41E18EB1AE300559C32 /* rectangle */ = {
-			isa = PBXGroup;
-			children = (
-				0098B41F18EB1AE300559C32 /* main.cpp */,
-				0098B42018EB1AE300559C32 /* main.o */,
-				0098B42118EB1AE300559C32 /* Makefile */,
-				0098B42218EB1AE300559C32 /* rectangle */,
-			);
-			path = rectangle;
-			sourceTree = "<group>";
-		};
-		0098B42318EB1AE300559C32 /* scribble */ = {
-			isa = PBXGroup;
-			children = (
-				0098B42418EB1AE300559C32 /* main.cpp */,
-				0098B42518EB1AE300559C32 /* main.o */,
-				0098B42618EB1AE300559C32 /* Makefile */,
-				0098B42718EB1AE300559C32 /* Makefile.osx */,
-				0098B42818EB1AE300559C32 /* scribble */,
-			);
-			path = scribble;
-			sourceTree = "<group>";
-		};
-		0098B42918EB1AE300559C32 /* sphere */ = {
-			isa = PBXGroup;
-			children = (
-				0098B42A18EB1AE300559C32 /* main.cpp */,
-				0098B42B18EB1AE300559C32 /* main.o */,
-				0098B42C18EB1AE300559C32 /* Makefile */,
-				0098B42D18EB1AE300559C32 /* sphere */,
-			);
-			path = sphere;
-			sourceTree = "<group>";
-		};
-		0098B43818EB1AE300559C32 /* objects */ = {
-			isa = PBXGroup;
-			children = (
-				0098B43918EB1AE300559C32 /* attributes.o */,
-				0098B43A18EB1AE300559C32 /* cprocessing.o */,
-				0098B43B18EB1AE300559C32 /* draw.o */,
-				0098B43C18EB1AE300559C32 /* environment.o */,
-				0098B43D18EB1AE300559C32 /* image.o */,
-				0098B43E18EB1AE300559C32 /* keypressed.o */,
-				0098B43F18EB1AE300559C32 /* keyreleased.o */,
-				0098B44018EB1AE300559C32 /* libcprocessing.a */,
-				0098B44118EB1AE300559C32 /* lights.o */,
-				0098B44218EB1AE300559C32 /* main.o */,
-				0098B44318EB1AE300559C32 /* mousedragged.o */,
-				0098B44418EB1AE300559C32 /* mousemoved.o */,
-				0098B44518EB1AE300559C32 /* mousepressed.o */,
-				0098B44618EB1AE300559C32 /* mousereleased.o */,
-				0098B44718EB1AE300559C32 /* primitives.o */,
-				0098B44818EB1AE300559C32 /* README.TXT */,
-				0098B44918EB1AE300559C32 /* setup.o */,
-				0098B44A18EB1AE300559C32 /* shapes.o */,
-				0098B44B18EB1AE300559C32 /* transformations.o */,
-			);
-			path = objects;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -466,7 +129,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0098B3DA18EB1AB800559C32 /* test.cpp in Sources */,
+				00314C1318F49931003AE324 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
