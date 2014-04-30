@@ -128,7 +128,6 @@ void rayObject(int type, int idx, vector<float> r, vector<float> o){
     if (type == 0) raySphere(idx,r,o); else rayPlane(idx,r,o);
 }
 
-
 //---------------------------------------------------------------------------------------
 // Lighting -----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -177,10 +176,6 @@ vector<float> reflect(vector<float> ray, vector<float> fromPoint){              
     vector<float> N = surfaceNormal(gType, gIndex, gPoint, fromPoint);  //Surface Normal
     return normalize3(sub3(ray, mul3c(N,(2 * dot3(ray,N)))));     //Approximation to Reflection
 }
-
-
-
-
 
 //---------------------------------------------------------------------------------------
 //Photon Mapping ------------------------------------------------------------------------
@@ -259,8 +254,8 @@ vector<float> computePixelColor(float x, float y){
 
 void drawPhoton(vector<float> rgb, vector<float> p){           //Photon Visualization
     if (p[2] > 0.0){                       //Only Draw if In Front of Camera
-        int x = (szImg/2) + (int)(szImg *  p[0]/p[2]); //Project 3D Points into Scene
-        int y = (szImg/2) + (int)(szImg * -p[1]/p[2]); //Don't Draw Outside Image
+        int x = (szImg/3) + (int)(szImg *  p[0]/p[2]); //Project 3D Points into Scene
+        int y = (szImg/3) + (int)(szImg * -p[1]/p[2]); //Don't Draw Outside Image
         if (y <= szImg) {stroke(255.0*rgb[0],255.0*rgb[1],255.0*rgb[2]); point(x,y);}}
 }
 
@@ -295,9 +290,6 @@ void emitPhotons(){
             bounces++;}
     }
 }
-
-
-
 
 void drawInterface() {
 //    String path = "/Users/terence/dev/PhotonMapping/processing/data/";
