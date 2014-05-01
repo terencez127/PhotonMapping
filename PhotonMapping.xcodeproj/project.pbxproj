@@ -7,13 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00314C1318F49931003AE324 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00314C1218F49931003AE324 /* main.cpp */; };
+		0036EF4F19126C30000EBE68 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B3D518E9099D00559C32 /* GLUT.framework */; };
+		004FC20A191017E1000FAE9D /* photonmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 004FC209191017E1000FAE9D /* photonmap.c */; };
+		004FC28719105F6D000FAE9D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004FC28519105F6D000FAE9D /* GLUT.framework */; };
+		004FC28819105F6D000FAE9D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004FC28619105F6D000FAE9D /* OpenGL.framework */; };
+		004FC28919106125000FAE9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00314C1218F49931003AE324 /* main.cpp */; };
 		00754E3E18E8DAEA00F68FFA /* PhotonMapping.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */; };
-		0098B3D718E9099D00559C32 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B3D518E9099D00559C32 /* GLUT.framework */; };
 		0098B3D818E9099D00559C32 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098B3D618E9099D00559C32 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		004FC27819105F17000FAE9D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		00754E3618E8DAEA00F68FFA /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -28,20 +40,33 @@
 
 /* Begin PBXFileReference section */
 		00314C1218F49931003AE324 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		004FC208191017E1000FAE9D /* photonmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = photonmap.h; sourceTree = "<group>"; };
+		004FC209191017E1000FAE9D /* photonmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = photonmap.c; sourceTree = "<group>"; };
+		004FC27A19105F17000FAE9D /* window */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = window; sourceTree = BUILT_PRODUCTS_DIR; };
+		004FC28519105F6D000FAE9D /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/GLUT.framework; sourceTree = DEVELOPER_DIR; };
+		004FC28619105F6D000FAE9D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		00754E3818E8DAEA00F68FFA /* PhotonMapping */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PhotonMapping; sourceTree = BUILT_PRODUCTS_DIR; };
 		00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = PhotonMapping.1; sourceTree = "<group>"; };
 		0098B3D518E9099D00559C32 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		0098B3D618E9099D00559C32 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		0098B3D918EB1AB800559C32 /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		00A8C5BE18FD2532003B99DC /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		004FC27719105F17000FAE9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				004FC28719105F6D000FAE9D /* GLUT.framework in Frameworks */,
+				004FC28819105F6D000FAE9D /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00754E3518E8DAEA00F68FFA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0098B3D718E9099D00559C32 /* GLUT.framework in Frameworks */,
+				0036EF4F19126C30000EBE68 /* GLUT.framework in Frameworks */,
 				0098B3D818E9099D00559C32 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +77,8 @@
 		00754E2F18E8DAEA00F68FFA = {
 			isa = PBXGroup;
 			children = (
+				004FC28519105F6D000FAE9D /* GLUT.framework */,
+				004FC28619105F6D000FAE9D /* OpenGL.framework */,
 				0098B3D518E9099D00559C32 /* GLUT.framework */,
 				0098B3D618E9099D00559C32 /* OpenGL.framework */,
 				00754E3A18E8DAEA00F68FFA /* PhotonMapping */,
@@ -63,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				00754E3818E8DAEA00F68FFA /* PhotonMapping */,
+				004FC27A19105F17000FAE9D /* window */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,9 +98,10 @@
 		00754E3A18E8DAEA00F68FFA /* PhotonMapping */ = {
 			isa = PBXGroup;
 			children = (
+				004FC208191017E1000FAE9D /* photonmap.h */,
+				004FC209191017E1000FAE9D /* photonmap.c */,
 				00314C1218F49931003AE324 /* main.cpp */,
 				00A8C5BE18FD2532003B99DC /* main.h */,
-				0098B3D918EB1AB800559C32 /* test.cpp */,
 				00754E3D18E8DAEA00F68FFA /* PhotonMapping.1 */,
 			);
 			path = PhotonMapping;
@@ -81,6 +110,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		004FC27919105F17000FAE9D /* window */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 004FC28019105F17000FAE9D /* Build configuration list for PBXNativeTarget "window" */;
+			buildPhases = (
+				004FC27619105F17000FAE9D /* Sources */,
+				004FC27719105F17000FAE9D /* Frameworks */,
+				004FC27819105F17000FAE9D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = window;
+			productName = window;
+			productReference = 004FC27A19105F17000FAE9D /* window */;
+			productType = "com.apple.product-type.tool";
+		};
 		00754E3718E8DAEA00F68FFA /* PhotonMapping */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00754E4118E8DAEA00F68FFA /* Build configuration list for PBXNativeTarget "PhotonMapping" */;
@@ -120,22 +166,53 @@
 			projectRoot = "";
 			targets = (
 				00754E3718E8DAEA00F68FFA /* PhotonMapping */,
+				004FC27919105F17000FAE9D /* window */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		004FC27619105F17000FAE9D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00754E3418E8DAEA00F68FFA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00314C1318F49931003AE324 /* main.cpp in Sources */,
+				004FC28919106125000FAE9D /* main.cpp in Sources */,
+				004FC20A191017E1000FAE9D /* photonmap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		004FC28119105F17000FAE9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.8;
+			};
+			name = Debug;
+		};
+		004FC28219105F17000FAE9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.8;
+			};
+			name = Release;
+		};
 		00754E3F18E8DAEA00F68FFA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -209,10 +286,20 @@
 		00754E4218E8DAEA00F68FFA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+					/opt/X11/include,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/terence/dev/cprocessing/objects,
+					/usr/local/lib,
+					/opt/X11/lib,
 				);
+				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -220,10 +307,20 @@
 		00754E4318E8DAEA00F68FFA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+					/opt/X11/include,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/terence/dev/cprocessing/objects,
+					/usr/local/lib,
+					/opt/X11/lib,
 				);
+				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -231,6 +328,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		004FC28019105F17000FAE9D /* Build configuration list for PBXNativeTarget "window" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				004FC28119105F17000FAE9D /* Debug */,
+				004FC28219105F17000FAE9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		00754E3318E8DAEA00F68FFA /* Build configuration list for PBXProject "PhotonMapping" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -1,6 +1,6 @@
 #include "main.h"
 #include <vector>
-#include <GLUT/glut.h>
+#include "GLUT/glut.h"
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -8,11 +8,10 @@
 using namespace std;
 using namespace pm;
 
-
+int mainWin, subWin1, subWin2, currentWindow;
 int mouseX = 0;
 int mouseY = 0;
 bool bMousePressed = false;
-int mouseButton = LEFT;
 bool bKeyPressed = false;
 unsigned char key = 255;
 int keyCode;
@@ -20,13 +19,12 @@ int keyCode;
 int width;
 int height;
 
-
 int frameRate = 60;
-
-int initialized = false;
 
 color strokeColor (0,0,0);
 color fillColor   (255,255,255);
+
+bool emitDone = false;
 
 float min(float a, float b) {
     return a <= b ? a : b;
@@ -72,86 +70,37 @@ vector<float> rand3(float s){
     return rand;
 }
 
-void pm::stroke (const color& c) {
-    strokeColor = c;
-}
+template<class C>
+C constrain(const C& a, const C& minv, const C& maxv) { return min(maxv,max(minv,a)); }
 
 
-void pm::fill (const color& c) {
-    fillColor = c;
-}
-
-static unsigned globColorMode = RGB;
-
-static double maxColor = 255;
-
-static void hsb_to_rgb (double h, double s, double v,
-                        double& r, double& g, double& b)
-{
-    double tmp = h*5.9999;
-    int hi = int (tmp);
-    double f = tmp-hi;
-    double p = v * (1-s);
-    double q = v * (1-f*s);
-    double t = v * (1-(1-f)*s);
-    if (hi==0) {
-        r = v; g = t; b = p;
-    } else if (hi==1) {
-        r = q; g = v; b = p;
-    } else if (hi==2) {
-        r = p; g = v; b = t;
-    } else if (hi == 3) {
-        r = p; g = q; b = v;
-    } else if (hi == 4) {
-        r = t; g = p; b = v;
-    } else {
-        r = v; g = p; b = q;
-    }
-}
-
-inline unsigned char clamp(double v) {
-    return v > 255 ? 255 : v < 0 ? 0 : (unsigned char) v;
+double clamp(double v) {
+    return v > 255 ? 255 : v < 0 ? 0 :  v;
 }
 
 pm::color::color(double val1, double val2, double val3, double valA) {
-    //SCale the values to a range of 255
-    val1 = val1/maxColor;
-    val2 = val2/maxColor;
-    val3 = val3/maxColor;
-    if (valA == MAXCOLOR) valA = 1.0;
-    else valA = valA/maxColor;
-
-    if (globColorMode != RGB) {
-        hsb_to_rgb(val1, val2, val3, val1, val2, val3);
-    }
-
-    rgba[0] = clamp(val1*255);
-    rgba[1] = clamp(val2*255);
-    rgba[2] = clamp(val3*255);
-    rgba[3] = clamp(valA*255);
+    rgba[0] = clamp(val1);
+    rgba[1] = clamp(val2);
+    rgba[2] = clamp(val3);
+    rgba[3] = clamp(valA);
 };
 
 
 color::color(double gray, double alpha){
-    if (alpha == MAXCOLOR) { alpha = maxColor;}
-    unsigned char val = clamp(gray/maxColor*255);
+    unsigned char val = clamp(gray);
     rgba[0] = val;
     rgba[1] = val;
     rgba[2] = val;
-    rgba[3] = clamp(alpha/maxColor*255);
+    rgba[3] = clamp(alpha);
 }
 
-static unsigned rectMode = CORNER;
-static std::vector<PVector> ellipseVtx;
-
-static std::vector<PVector> sphereVtx;
 static std::vector<unsigned> sphereIdx;
 
 
-void pm::quad (double x0, double y0,
-               double x1, double y1,
-               double x2, double y2,
-               double x3, double y3)
+void quad (double x0, double y0,
+           double x1, double y1,
+           double x2, double y2,
+           double x3, double y3)
 {
     GLdouble vertices[] = {
         x0, y0,
@@ -181,7 +130,7 @@ void pm::quad (double x0, double y0,
 }
 
 /// Draws a point.
-void pm::point (double x, double y, double z)
+void drawPoint (double x, double y, double z = 0)
 {
     if (strokeColor.rgba[3] > 0) {
         // Draw point using the stroke color
@@ -194,24 +143,10 @@ void pm::point (double x, double y, double z)
 
 void pm::rect (double x, double y, double a, double b)
 {
-    // Make changes to arguments to reflect the current rectMode
-    switch (::rectMode) {
-		case CORNER:
-			quad (x, y, x+a, y, x+a, y+b, x, y+b);
-			break;
-		case CENTER:
-			quad (x-a/2, y-b/2, x+a/2, y-b/2, x+a/2, y+b/2, x-a/2, y+b/2);
-            break;
-        case RADIUS:
-			quad (x-a, y-b, x+a, y-b, x+a, y+b, x-a, y+b);
-		   	break;
-		case CORNERS:
-			quad (x, y, a, y, a, b, x, b);
-		   	break;
-    }
+    quad (x, y, x+a, y, x+a, y+b, x, y+b);
 }
 
-void pm::background (const color& c) {
+void background (const color& c) {
     glClearColor (c.rgba[0] * (1.0/255),
                   c.rgba[1] * (1.0/255),
                   c.rgba[2] * (1.0/255),
@@ -224,32 +159,33 @@ void pm::background (const color& c) {
 int resolution = 512;
 int nrTypes = 2;
 vector<int> nrObjects = {3,5};
-float gAmbient = 0.1;
 vector<float> gOrigin = {0.0,0.0,0.0};
 vector<float> Light = {0.0,1.2,3.75};
-vector< vector<float> > spheres = {{1.0,0.0,4.0,0.5}, {-0.6,-1.0,4.5,0.5}, {0.0,1.0,4.5,0.3}};
+vector<vector<float> > spheres = {{1.0,0.0,4.0,0.5}, {-0.6,-1.0,4.5,0.5}, {0.0,1.0,4.5,0.3}};
 vector<vector<float>> planes  = {{0, 1.5},{1, -1.5},{0, -1.5},{1, 1.5},{2,5.0}};
 
 
 int nrPhotons = 400;
 int nrBounces = 3;
-bool lightPhotons = true;
 float sqRadius = 0.7;
 float exposure = 30.0;
-vector<vector<int> > numPhotons = {{0,0},{0,0,0,0,0}};
+vector<vector<int> > numPhotons = {{0,0,0},{0,0,0,0,0}};
 
-vector<vector<vector<vector<vector<float> > > > > photons(2,
-                                                          vector<vector<vector<vector<float> > > >(5, vector<vector<vector<float> > >(5000,
-                                                                                                                                      vector<vector<float> >(3, vector<float>(5)))));
+//  photon map, [type][index][photon][photon_info][]
+vector<vector<vector<vector<vector<float> > > > > photons
+(2,vector<vector<vector<vector<float> > > >
+ (6, vector<vector<vector<float> > >
+  (5000,vector<vector<float> >
+   (3, vector<float>(3)))));
 
 bool gIntersect = false;
-int gType;
-int gIndex;
-float gSqDist, gDist = -1.0;
-vector<float> gPoint = {0.0, 0.0, 0.0};
+int gType;  //  Type of the Intersected Object (Sphere or Plane)
+int gIndex; //  Index of the Intersected Object
+float gSqDist, gDist = -1.0;    //  Distance from Ray Origin to Intersection
+vector<float> gPoint = {0.0, 0.0, 0.0}; //  The Intersection point
 
 bool empty = true;
-bool view3D = true;
+bool mode3D = true;
 int pRow, pCol, pIteration, pMax;
 bool odd(int x) {return x % 2 != 0;}
 
@@ -261,6 +197,7 @@ void mouseReleased() {
     prevMouseX = -9999;
     prevMouseY = -9999;
     mouseDragging = false;
+
 }
 
 
@@ -284,15 +221,15 @@ void checkDistance(float lDist, int p, int i){
         gType = p; gIndex = i; gDist = lDist; gIntersect = true;}
 }
 
-void raySphere(int idx, vector<float> const &r, vector<float> const &o)
+void raySphere(int idx, vector<float> const &direction, vector<float> const &origin)
 {
-    vector<float> s = sub3(spheres[idx],o);
+    vector<float> s = sub3(spheres[idx],origin);
     float radius = spheres[idx][3];
 
 
-    float A = dot3(r,r);
-    float B = -2.0 * dot3(s,r);
-    float C = dot3(s,s) - sq(radius);
+    float A = dot3(direction,direction);
+    float B = -2.0 * dot3(s,direction);
+    float C = dot3(s,s) - radius*radius;
     float D = B*B - 4*A*C;
 
     if (D > 0.0){
@@ -337,7 +274,7 @@ vector<float> surfaceNormal(int type, int index, vector<float>& P, vector<float>
 
 float lightObject(int type, int idx, vector<float>& P, float lightAmbient){
     float i = lightDiffuse( surfaceNormal(type, idx, P, Light) , P );
-    return min(1.0, pm::max(i, lightAmbient));
+    return min(1.0, max(i, lightAmbient));
 }
 
 
@@ -364,7 +301,7 @@ vector<float> gatherPhotons(vector<float>& p, int type, int id){
     vector<float> N = surfaceNormal(type, id, p, gOrigin);
     for (int i = 0; i < numPhotons[type][id]; i++){
         if (gatedSqDist3(p,photons[type][id][i][0],sqRadius)){
-            float weight = pm::max(0.0f, -dot3(N, photons[type][id][i][1] ));
+            float weight = max(0.0f, -dot3(N, photons[type][id][i][1] ));
             weight *= (1.0 - sqrt(gSqDist)) / exposure;
             energy = add3(energy, mul3c(photons[type][id][i][2], weight));
         }}
@@ -389,20 +326,6 @@ void shadowPhoton(vector<float>& ray){
     gPoint = tPoint; gType = tType; gIndex = tIndex;
 }
 
-vector<float> filterColor(vector<float>& rgbIn, float r, float g, float b){
-    vector<float> rgbOut = {r,g,b};
-    for (int c=0; c<3; c++) rgbOut[c] = min(rgbOut[c],rgbIn[c]);
-    return rgbOut;
-}
-
-vector<float> getColor(vector<float>& rgbIn, int type, int index){
-    if      (type == 1 && index == 0) { return filterColor(rgbIn, 0.0, 1.0, 0.0);}
-    else if (type == 1 && index == 1) { return filterColor(rgbIn, 1.0, 0.0, 0.0);}
-    else if (type == 1 && index == 2) { return filterColor(rgbIn, 0.0, 0.0, 1.0);}
-    else
-    { return filterColor(rgbIn, 1.0, 1.0, 1.0);}
-}
-
 
 vector<float> computePixelColor(float x, float y){
     vector<float> rgb = {0.0,0.0,0.0};
@@ -413,38 +336,42 @@ vector<float> computePixelColor(float x, float y){
     if (gIntersect){
         gPoint = mul3c(ray,gDist);
 
-        if (gType == 0 && gIndex == 1){
+        if (gType == 0 && gIndex != 0){
             ray = reflect(ray,gOrigin);
             raytrace(ray, gPoint);
             if (gIntersect){ gPoint = add3( mul3c(ray,gDist), gPoint); }}
 
-        if (lightPhotons){
-            rgb = gatherPhotons(gPoint,gType,gIndex);}
-        else{
-            int tType = gType, tIndex = gIndex;
-            float i = gAmbient;
-            raytrace( sub3(gPoint,Light) , Light);
-            if (tType == gType && tIndex == gIndex)
-                i = lightObject(gType, gIndex, gPoint, gAmbient);
-            rgb[0]=i; rgb[1]=i; rgb[2]=i;
-            rgb = getColor(rgb,tType,tIndex);}
+        rgb = gatherPhotons(gPoint,gType,gIndex);
     }
     return rgb;
 }
 
-void drawPhoton(vector<float> const &rgb, vector<float> const &p){
-    if (view3D && p[2] > 0.0){
+void drawPhoton(vector<float> const &rgb, vector<float> const &p, bool mode){
+    if (mode && p[2] > 0.0){
+
         int x = (resolution/2) + (int)(resolution *  p[0]/p[2]);
         int y = (resolution/2) + (int)(resolution * -p[1]/p[2]);
-        if (y <= resolution) {stroke(255.0*rgb[0],255.0*rgb[1],255.0*rgb[2]); point(x,y);}}
+        if (y <= resolution) {
+            strokeColor = color(255.0*rgb[0],255.0*rgb[1],255.0*rgb[2]);
+//            glutSetWindow(subWin2);
+            drawPoint(x,y);
+//            glutSetWindow(subWin2);
+//            drawPoint(x,y);
+        }
+
+    }
 }
 
+
 void emitPhotons(){
+
+
+    emitDone = false;
     for (int t = 0; t < nrTypes; t++)
         for (int i = 0; i < nrObjects[t]; i++)
             numPhotons[t][i] = 0;
 
-    for (int i = 0; i < (view3D ? nrPhotons * 3.0 : nrPhotons); i++){
+      for (int i = 0; i < nrPhotons; i++){
         int bounces = 1;
         vector<float> rgb = {1.0,1.0,1.0};
         vector<float> ray = normalize3( rand3(1.0) );
@@ -459,20 +386,41 @@ void emitPhotons(){
 
         while (gIntersect && bounces <= nrBounces){
             gPoint = add3( mul3c(ray,gDist), prevPoint);
-            rgb = mul3c (getColor(rgb,gType,gIndex), 1.0/sqrt(bounces));
+            rgb = mul3c (rgb, 1.0/sqrt(bounces));
             storePhoton(gType, gIndex, gPoint, ray, rgb);
-            drawPhoton(rgb, gPoint);
+            drawPhoton(rgb, gPoint, mode3D);
             shadowPhoton(ray);
             ray = reflect(ray,prevPoint); //Bounce the Photon
             raytrace(ray, gPoint);        //Trace It to Next Location
             prevPoint = gPoint;
-            bounces++;}
+            bounces++;
+        }
     }
+
+    emitDone = true;
 }
 
-void resetRender() {
+void display1 () {
+    glutSetWindow(subWin1);
+    display_scene();
+}
+
+void display2 () {
+    glutSetWindow(subWin2);
+    display_photon();
+}
+
+void renderAll() {
+//        printf("all ");
+    display1();
+    display2();
+    glutPostRedisplay();
+}
+
+void reset() {
     pRow=0; pCol=0; pIteration=1; pMax=2;
-    empty=true; if (lightPhotons && !view3D) emitPhotons();
+    empty=true;
+    if (!mode3D) emitPhotons();
     glutPostRedisplay();
 }
 
@@ -480,7 +428,8 @@ void render(){
     int x,y,iterations = 0;
     vector<float> rgb = {0.0,0.0,0.0};
 
-    while (iterations < (mouseDragging ? 1024 : pm::max(pMax, 512) )){
+    while (iterations < (mouseDragging ? 1024 : max(pMax, 256) )){
+//        printf("%d %d %d %d\n", pIteration, pRow, pCol, pMax);
         if (pCol >= pMax) {
             pRow++;
             pCol = 0;
@@ -498,10 +447,11 @@ void render(){
         if (pNeedsDrawing){
             iterations++;
             rgb = mul3c( computePixelColor(x,y), 255.0);
-            stroke(rgb[0],rgb[1],rgb[2]); pm::fill(rgb[0],rgb[1],rgb[2]);
+            strokeColor = color(rgb[0],rgb[1],rgb[2]); fillColor = color(rgb[0],rgb[1],rgb[2]);
             rect(x,y,(resolution/pMax)-1,(resolution/pMax)-1);
         }
     }
+
     if (pRow == resolution-1) {empty = false;}
 }
 
@@ -511,26 +461,24 @@ void mousePressed(){
     if (gatedSqDist3(mouse3,spheres[0],spheres[0][3])) sphereIndex = 0;
     else if (gatedSqDist3(mouse3,spheres[1],spheres[1][3])) sphereIndex = 1;
     else if (gatedSqDist3(mouse3,spheres[2],spheres[2][3])) sphereIndex = 2;
+
+    currentWindow = glutGetWindow();
 }
 
 void mouseDragged(){
     if (prevMouseX > -9999 && sphereIndex > -1){
         if (sphereIndex < nrObjects[0]){ //Drag Sphere
             spheres[sphereIndex][0] += (mouseX - prevMouseX)/s;
-            spheres[sphereIndex][1] -= (mouseY - prevMouseY)/s;}
-        else{ //Drag Light
+            spheres[sphereIndex][1] -= (mouseY - prevMouseY)/s;
+        } else { //Drag Light
             Light[0] += (mouseX - prevMouseX)/s; Light[0] = constrain(Light[0],-1.4f,1.4f);
-            Light[1] -= (mouseY - prevMouseY)/s; Light[1] = constrain(Light[1],-0.4f,1.2f);}
-        resetRender();}
+            Light[1] -= (mouseY - prevMouseY)/s; Light[1] = constrain(Light[1],-0.4f,1.2f);
+        }
+        reset();
+    }
+
     prevMouseX = mouseX; prevMouseY = mouseY; mouseDragging = true;
 }
-
-void setup(){
-    size(resolution,resolution);
-    emitPhotons();
-    resetRender();
-}
-
 
 static void init () {
     glEnable(GL_DEPTH_TEST);
@@ -553,15 +501,22 @@ static void init () {
 
 
 void display () {
+    glutSetWindow(mainWin);
+//    glutSwapBuffers();
+}
+
+
+void display_scene () {
+
     glLoadIdentity();
 
-    gluLookAt (width/2.0, height/2.0, (height/2.0) / tan(M_PI*60.0 / 360.0),
-               width/2.0, height/2.0, 0, 0, 1, 0);
+    gluLookAt (width/4.0, height/2.0, (height/2.0) / tan(M_PI*60.0 / 360.0),
+               width/4.0, height/2.0, 0, 0, 1, 0);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     double cameraZ = height/2.0 / tan(M_PI*60/360);
-    gluPerspective(60, width*1.0/height, cameraZ/100.0, cameraZ*10.0);
+    gluPerspective(60, width/2.0/height, cameraZ/100.0, cameraZ*10.0);
 
 
     glScalef(1,-1,1);
@@ -569,40 +524,89 @@ void display () {
     glMatrixMode(GL_MODELVIEW);
 
 
-    glDisable(GL_LIGHTING);
 
-    if (view3D){
-        if (empty){
-            stroke(0); fill(0); rect(0,0,resolution-1,resolution-1);
-            emitPhotons(); empty = false;
-//            render();
+            render();
+
+
+    glutSwapBuffers() ;
+}
+
+
+void display_photon () {
+    glLoadIdentity();
+
+    gluLookAt (width/4.0, height/2.0, (height/2.0) / tan(M_PI*60.0 / 360.0),
+               width/4.0, height/2.0, 0, 0, 1, 0);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    double cameraZ = height/2.0 / tan(M_PI*60/360);
+    gluPerspective(60, width/2.0/height, cameraZ/100.0, cameraZ*10.0);
+
+    glScalef(1,-1,1);
+
+    glMatrixMode(GL_MODELVIEW);
+
+   if (empty){
+       strokeColor = 0;
+       fillColor = 0;
+       rect(0,0,resolution-1,resolution-1);
+       emitPhotons();
+       empty = false;
+   }
+
+    int a = 0,b = 0;
+
+        for (int i = 0; i < 3; i++) {
+            a += numPhotons[0][i];
+            for (int j = 0; j < numPhotons[0][i]; j++) {
+                drawPhoton(photons[0][i][j][0], photons[0][i][j][2], true);
+            }
+
         }
-    }
-    else{
-        if (empty) render();
-    }
 
+        for (int i = 0; i < 5; i++) {
+            b += numPhotons[1][i];
+            for (int j = 0; j < numPhotons[1][i]; j++) {
+                drawPhoton(photons[0][i][j][0], photons[0][i][j][2], true);
+            }
+
+        }
+
+//    printf("%d %d\n", a,b);
 
     glutSwapBuffers() ;
 }
 
 static void reshape (int wid, int hgt)
 {
-    glViewport(0,0,wid,hgt);
+    printf("%d, %d\n", wid, hgt);
 
     width = wid;
     height = hgt;
 
-    background (200);
-
+    background (0);
+    glutSetWindow(mainWin);
     init();
+
+    glutSetWindow(subWin1);
+    glutPositionWindow(0, 0);
+    glutReshapeWindow(wid/2, hgt);
+    glViewport(0,0,wid/2,hgt);
+
+
+    glutSetWindow(subWin2);
+    glutPositionWindow(wid/2, 0);
+    glutReshapeWindow(wid/2, hgt);
+    glViewport(0,0,wid/2,hgt);
 
 }
 
 
 void refresh (int) {
-    glutPostRedisplay();
+    renderAll();
     glutTimerFunc (1000/frameRate, refresh, 0);
+
 }
 
 
@@ -620,14 +624,6 @@ static void mouse (int button, int state, int x, int y) {
     mouseY = y;
 
     bMousePressed = state == GLUT_DOWN;
-
-    if (button == GLUT_LEFT_BUTTON) {
-        mouseButton = LEFT;
-    } else if (button == GLUT_RIGHT_BUTTON) {
-        mouseButton = RIGHT;
-    } else {
-        mouseButton = CENTER;
-    }
     if (bMousePressed) {
         mousePressed();
     }
@@ -643,22 +639,22 @@ static void keyboard (unsigned char ch, int x, int y) {
     keyCode = ch;
 
     if (ch=='1') {
-        view3D = false;
-        lightPhotons = false;
-        resetRender();
+        mode3D = false;
+        reset();
     } else if (ch=='2') {
-        view3D = false;
-        lightPhotons = true;
-        resetRender();
-    } else if (ch=='3') {
-        view3D = true;
-        resetRender();
+
+        mode3D = true;
+        reset();
+
     } else if (ch=='w') {
-        exposure += 0.1;
-        resetRender();
-    } else if (ch=='d') {
-        exposure -= 0.1;
-        resetRender();
+        sqRadius += 0.1;
+        printf("%f\n", sqRadius);
+        reset();
+    } else if (ch=='s') {
+        sqRadius -= 0.1;
+        if (sqRadius < 0.1) sqRadius = 0.1;
+        printf("%f\n", sqRadius);
+        reset();
     }
 }
 
@@ -670,49 +666,75 @@ static void special (int ch, int x, int y) {
     switch (ch) {
         case GLUT_KEY_LEFT:
             nrBounces -= 1;
-            resetRender();
+            if (nrBounces < 1) nrBounces = 1;
+            printf("Bounce time limit: %d\n", nrBounces);
+            reset();
             break;
         case GLUT_KEY_UP:
             nrPhotons += 100;
-            resetRender();
+            printf("Photon amount: %d\n", nrPhotons);
+            reset();
             break;
         case GLUT_KEY_RIGHT:
             nrBounces += 1;
-            resetRender();
+            printf("Bounce time limit: %d\n", nrBounces);
+            reset();
             break;
         case GLUT_KEY_DOWN:
             nrPhotons -= 100;
-            resetRender();
+            if (nrPhotons < 0) nrPhotons = 0;
+            printf("Photon amount: %d\n", nrPhotons);
+            reset();
             break;
     }
 
-}
-
-
-void pm::size (unsigned w, unsigned h, const char* name) {
-    if (initialized) {
-        glutReshapeWindow (w, h);
-        glutSetWindowTitle (name);
-    } else {
-        glutInitWindowSize (w, h);
-        width = w;
-        height = h;
-        glutCreateWindow (name);
-        glutReshapeFunc(reshape);
-        glutDisplayFunc(display);
-        glutMotionFunc (mousemotion);
-        glutMouseFunc (mouse);
-        glutKeyboardFunc (keyboard);
-        glutSpecialFunc(special);
-        initialized = true;
-    }
-    
 }
 
 int main (int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
-    glutTimerFunc (1000/frameRate, refresh, 0);
-    setup();
+//    glutTimerFunc (1000/frameRate, refresh, 0);
+
+
+    glutInitWindowPosition(50, 100);
+    glutInitWindowSize (resolution*2, resolution);
+    width = resolution*2;
+    height = resolution;
+    mainWin = glutCreateWindow ("Photon Mapping");
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutIdleFunc(renderAll);
+    glutMotionFunc (mousemotion);
+    glutMouseFunc (mouse);
+    glutKeyboardFunc (keyboard);
+    glutSpecialFunc(special);
+//
+//    glutInitWindowPosition(resolution + 50, 100);
+//    glutInitWindowSize (resolution, resolution);
+//    subWin2 = glutCreateWindow("Photon Visualization");
+//    glutDisplayFunc(display_photon);
+//    glutMotionFunc (mousemotion);
+//    glutMouseFunc (mouse);
+//    glutKeyboardFunc (keyboard);
+//    glutSpecialFunc(special);
+
+        subWin1 = glutCreateSubWindow(mainWin, 0, 0, resolution, resolution);
+        glutDisplayFunc(display1);
+        glutMotionFunc (mousemotion);
+        glutMouseFunc (mouse);
+        glutKeyboardFunc (keyboard);
+        glutSpecialFunc(special);
+
+
+        subWin2 = glutCreateSubWindow(mainWin, resolution, 0, resolution, resolution);
+        glutDisplayFunc(display2);
+        glutMotionFunc (mousemotion);
+        glutMouseFunc (mouse);
+        glutKeyboardFunc (keyboard);
+        glutSpecialFunc(special);
+
+    glutSetWindow(subWin1);
+    emitPhotons();
+    reset();
     glutMainLoop();
 }

@@ -1,16 +1,16 @@
-import processing.core.*;
-import processing.data.*;
-import processing.event.*;
-import processing.opengl.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.IOException;
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
 
 public class Processing extends PApplet {
 
@@ -47,7 +47,7 @@ float[] gPoint = {0.0f, 0.0f, 0.0f}; //... Point At Which the Ray Intersected th
 //Ray-Geometry Intersections  -----------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-void raySphere(int idx, float[] r, float[] o) //Ray-Sphere Intersection: r=Ray Direction, o=Ray Origin
+public void raySphere(int idx, float[] r, float[] o) //Ray-Sphere Intersection: r=Ray Direction, o=Ray Origin
 {
   float[] s = sub3(spheres[idx],o);  //s=Sphere Center Translated into Coordinate Frame of Ray Origin
   float radius = spheres[idx][3];    //radius=Sphere Radius
@@ -64,18 +64,18 @@ void raySphere(int idx, float[] r, float[] o) //Ray-Sphere Intersection: r=Ray D
     checkDistance(lDist,0,idx);}             //Is This Closest Intersection So Far?
 }
 
-void rayPlane(int idx, float[] r, float[] o){ //Ray-Plane Intersection
+public void rayPlane(int idx, float[] r, float[] o){ //Ray-Plane Intersection
   int axis = (int) planes[idx][0];            //Determine Orientation of Axis-Aligned Plane
   if (r[axis] != 0.0f){                        //Parallel Ray -> No Intersection
     float lDist = (planes[idx][1] - o[axis]) / r[axis]; //Solve Linear Equation (rx = p-o)
     checkDistance(lDist,1,idx);}
 }
 
-void rayObject(int type, int idx, float[] r, float[] o){
+public void rayObject(int type, int idx, float[] r, float[] o){
   if (type == 0) raySphere(idx,r,o); else rayPlane(idx,r,o);
 }
 
-void checkDistance(float lDist, int p, int i){
+public void checkDistance(float lDist, int p, int i){
   if (lDist < gDist && lDist > 0.0f){ //Closest Intersection So Far in Forward Direction of Ray?
     gType = p; gIndex = i; gDist = lDist; gIntersect = true;} //Save Intersection in Global State
 }
@@ -84,28 +84,28 @@ void checkDistance(float lDist, int p, int i){
 // Lighting -----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-float lightDiffuse(float[] N, float[] P){  //Diffuse Lighting at Point P with Surface Normal N
+public float lightDiffuse(float[] N, float[] P){  //Diffuse Lighting at Point P with Surface Normal N
   float[] L = normalize3( sub3(Light,P) ); //Light Vector (Point to Light)
   return dot3(N,L);                        //Dot Product = cos (Light-to-Surface-Normal Angle)
 }
 
-float[] sphereNormal(int idx, float[] P){
+public float[] sphereNormal(int idx, float[] P){
   return normalize3(sub3(P,spheres[idx])); //Surface Normal (Center to Point)
 }
 
-float[] planeNormal(int idx, float[] P, float[] O){
+public float[] planeNormal(int idx, float[] P, float[] O){
   int axis = (int) planes[idx][0];
   float [] N = {0.0f,0.0f,0.0f};
   N[axis] = O[axis] - planes[idx][1];      //Vector From Surface to Light
   return normalize3(N);
 }
 
-float[] surfaceNormal(int type, int index, float[] P, float[] Inside){
+public float[] surfaceNormal(int type, int index, float[] P, float[] Inside){
   if (type == 0) {return sphereNormal(index,P);}
   else           {return planeNormal(index,P,Inside);}
 }
 
-float lightObject(int type, int idx, float[] P, float lightAmbient){
+public float lightObject(int type, int idx, float[] P, float lightAmbient){
   float i = lightDiffuse( surfaceNormal(type, idx, P, Light) , P );
   return min(1.0f, max(i, lightAmbient));   //Add in Ambient Light by Constraining Min Value
 }
@@ -114,7 +114,7 @@ float lightObject(int type, int idx, float[] P, float lightAmbient){
 // Raytracing ---------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-void raytrace(float[] ray, float[] origin)
+public void raytrace(float[] ray, float[] origin)
 {
   gIntersect = false; //No Intersections Along This Ray Yet
   gDist = 999999.9f;   //Maximum Distance to Any Object
@@ -124,7 +124,7 @@ void raytrace(float[] ray, float[] origin)
       rayObject(t,i,ray,origin);
 }
 
-float[] computePixelColor(float x, float y){
+public float[] computePixelColor(float x, float y){
   float[] rgb = {0.0f,0.0f,0.0f};
   float[] ray = {  x/szImg - 0.5f ,       //Convert Pixels to Image Plane Coordinates
                  -(y/szImg - 0.5f), 1.0f}; //Focal Length = 1.0
@@ -152,7 +152,7 @@ float[] computePixelColor(float x, float y){
   return rgb;
 }
 
-float[] reflect(float[] ray, float[] fromPoint){                //Reflect Ray
+public float[] reflect(float[] ray, float[] fromPoint){                //Reflect Ray
   float[] N = surfaceNormal(gType, gIndex, gPoint, fromPoint);  //Surface Normal
   return normalize3(sub3(ray, mul3c(N,(2 * dot3(ray,N)))));     //Approximation to Reflection
 }
@@ -161,7 +161,7 @@ float[] reflect(float[] ray, float[] fromPoint){                //Reflect Ray
 //Photon Mapping ------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-float[] gatherPhotons(float[] p, int type, int id){
+public float[] gatherPhotons(float[] p, int type, int id){
   float[] energy = {0.0f,0.0f,0.0f};
   float[] N = surfaceNormal(type, id, p, gOrigin);                   //Surface Normal at Current Point
   for (int i = 0; i < numPhotons[type][id]; i++){                    //Photons Which Hit Current Object
@@ -173,7 +173,7 @@ float[] gatherPhotons(float[] p, int type, int id){
   return energy;
 }
 
-void emitPhotons(){
+public void emitPhotons(){
   randomSeed(0);                               //Ensure Same Photons Each Time
   for (int t = 0; t < nrTypes; t++)            //Initialize Photon Count to Zero for Each Object
     for (int i = 0; i < nrObjects[t]; i++)
@@ -205,14 +205,14 @@ void emitPhotons(){
   }
 }
 
-void storePhoton(int type, int id, float[] location, float[] direction, float[] energy){
+public void storePhoton(int type, int id, float[] location, float[] direction, float[] energy){
   photons[type][id][numPhotons[type][id]][0] = location;  //Location
   photons[type][id][numPhotons[type][id]][1] = direction; //Direction
   photons[type][id][numPhotons[type][id]][2] = energy;    //Attenuated Energy (Color)
   numPhotons[type][id]++;
 }
 
-void shadowPhoton(float[] ray){                               //Shadow Photons
+public void shadowPhoton(float[] ray){                               //Shadow Photons
   float[] shadow = {-0.25f,-0.25f,-0.25f};
   float[] tPoint = gPoint;
   int tType = gType, tIndex = gIndex;                         //Save State
@@ -223,13 +223,13 @@ void shadowPhoton(float[] ray){                               //Shadow Photons
   gPoint = tPoint; gType = tType; gIndex = tIndex;            //Restore State
 }
 
-float[] filterColor(float[] rgbIn, float r, float g, float b){ //e.g. White Light Hits Red Wall
+public float[] filterColor(float[] rgbIn, float r, float g, float b){ //e.g. White Light Hits Red Wall
   float[] rgbOut = {r,g,b};
   for (int c=0; c<3; c++) rgbOut[c] = min(rgbOut[c],rgbIn[c]); //Absorb Some Wavelengths (R,G,B)
   return rgbOut;
 }
 
-float[] getColor(float[] rgbIn, int type, int index){ //Specifies Material Color of Each Object
+public float[] getColor(float[] rgbIn, int type, int index){ //Specifies Material Color of Each Object
   if      (type == 1 && index == 0) { return filterColor(rgbIn, 0.0f, 1.0f, 0.0f);}
   else if (type == 1 && index == 2) { return filterColor(rgbIn, 1.0f, 0.0f, 0.0f);}
   else                              { return filterColor(rgbIn, 1.0f, 1.0f, 1.0f);}
@@ -239,41 +239,36 @@ float[] getColor(float[] rgbIn, int type, int index){ //Specifies Material Color
 //Vector Operations ---------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-float[] normalize3(float[] v){        //Normalize 3-Vector
+public float[] normalize3(float[] v){        //Normalize 3-Vector
   float L = sqrt(dot3(v,v));
   return mul3c(v, 1.0f/L);
 }
 
-float[] sub3(float[] a, float[] b){   //Subtract 3-Vectors
+public float[] sub3(float[] a, float[] b){   //Subtract 3-Vectors
   float[] result = {a[0] - b[0], a[1] - b[1], a[2] - b[2]};
   return result;
 }
 
-float[] add3(float[] a, float[] b){   //Add 3-Vectors
+public float[] add3(float[] a, float[] b){   //Add 3-Vectors
   float[] result = {a[0] + b[0], a[1] + b[1], a[2] + b[2]};
   return result;
 }
 
-float[] mul3c(float[] a, float c){    //Multiply 3-Vector with Scalar
+public float[] mul3c(float[] a, float c){    //Multiply 3-Vector with Scalar
   float[] result = {c*a[0], c*a[1], c*a[2]};
   return result;
 }
 
-float dot3(float[] a, float[] b){     //Dot Product 3-Vectors
+public float dot3(float[] a, float[] b){     //Dot Product 3-Vectors
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-float random(float Min, float Max)
-{
-    return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
-}
-
-float[] rand3(float s){               //Random 3-Vector
+public float[] rand3(float s){               //Random 3-Vector
   float[] rand = {random(-s,s),random(-s,s),random(-s,s)};
   return rand;
 }
 
-boolean gatedSqDist3(float[] a, float[] b, float sqradius){ //Gated Squared Distance
+public boolean gatedSqDist3(float[] a, float[] b, float sqradius){ //Gated Squared Distance
   float c = a[0] - b[0];          //Efficient When Determining if Thousands of Points
   float d = c*c;                  //Are Within a Radius of a Point (and Most Are Not!)
   if (d > sqradius) return false; //Gate 1 - If this dimension alone is larger than
@@ -292,9 +287,9 @@ boolean gatedSqDist3(float[] a, float[] b, float sqradius){ //Gated Squared Dist
 boolean empty = true, view3D = false; //Stop Drawing, Switch Views
 PFont font; PImage img1, img2, img3;  //Fonts, Images
 int pRow, pCol, pIteration, pMax;     //Pixel Rendering Order
-boolean odd(int x) {return x % 2 != 0;}
+public boolean odd(int x) {return x % 2 != 0;}
 
-void setup(){
+public void setup(){
   size(szImg,szImg + 48);
   frameRate(9999);
   font = loadFont("Helvetica-Bold-12.vlw");
@@ -303,7 +298,7 @@ void setup(){
   drawInterface();
 }
 
-void draw(){
+public void draw(){
   if (view3D){
     if (empty){
       stroke(0); fill(0); rect(0,0,szImg-1,szImg-1); //Black Out Drawing Area
@@ -312,7 +307,7 @@ void draw(){
     if (empty) render(); else frameRate(10);} //Only Draw if Image Not Fully Rendered
 }
 
-void drawInterface() {
+public void drawInterface() {
   String path = "/Users/terence/dev/PhotonMapping/processing/data/";
   stroke(221,221,204); fill(221,221,204); rect(0,szImg,szImg,48); //Fill Background with Page Color
   img1=loadImage(path + "1_32.gif"); img2=loadImage(path + "2_32.gif"); img3=loadImage(path + "3_32.gif"); //Load Images
@@ -330,7 +325,7 @@ void drawInterface() {
   rect(282,519,33,33); image(img3,283,520);
 }
 
-void render(){ //Render Several Lines of Pixels at Once Before Drawing
+public void render(){ //Render Several Lines of Pixels at Once Before Drawing
   int x,y,iterations = 0;
   float[] rgb = {0.0f,0.0f,0.0f};
 
@@ -352,11 +347,11 @@ void render(){ //Render Several Lines of Pixels at Once Before Drawing
   if (pRow == szImg-1) {empty = false;}
 }
 
-void resetRender(){ //Reset Rendering Variables
+public void resetRender(){ //Reset Rendering Variables
   pRow=0; pCol=0; pIteration=1; pMax=2; frameRate(9999);
   empty=true; if (lightPhotons && !view3D) emitPhotons();}
 
-void drawPhoton(float[] rgb, float[] p){           //Photon Visualization
+public void drawPhoton(float[] rgb, float[] p){           //Photon Visualization
   if (view3D && p[2] > 0.0f){                       //Only Draw if In Front of Camera
     int x = (szImg/2) + (int)(szImg *  p[0]/p[2]); //Project 3D Points into Scene
     int y = (szImg/2) + (int)(szImg * -p[1]/p[2]); //Don't Draw Outside Image
@@ -369,10 +364,10 @@ void drawPhoton(float[] rgb, float[] p){           //Photon Visualization
 int prevMouseX = -9999, prevMouseY = -9999, sphereIndex = -1;
 float s = 130.0f; //Arbitary Constant Through Experimentation
 boolean mouseDragging = false;
-void mouseReleased() {prevMouseX = -9999; prevMouseY = -9999; mouseDragging = false;}
-void keyPressed() {switchToMode(key,9999);}
+public void mouseReleased() {prevMouseX = -9999; prevMouseY = -9999; mouseDragging = false;}
+public void keyPressed() {switchToMode(key,9999);}
 
-void mousePressed(){
+public void mousePressed(){
   sphereIndex = 2; //Click Spheres
   float[] mouse3 = {(mouseX - szImg/2)/s, -(mouseY - szImg/2)/s, 0.5f*(spheres[0][2] + spheres[1][2])};
   if (gatedSqDist3(mouse3,spheres[0],spheres[0][3])) sphereIndex = 0;
@@ -380,7 +375,7 @@ void mousePressed(){
   if (mouseY > szImg) switchToMode('0', mouseX); //Click Buttons
 }
 
-void mouseDragged(){
+public void mouseDragged(){
   if (prevMouseX > -9999 && sphereIndex > -1){
     if (sphereIndex < nrObjects[0]){ //Drag Sphere
       spheres[sphereIndex][0] += (mouseX - prevMouseX)/s;
@@ -392,12 +387,12 @@ void mouseDragged(){
  prevMouseX = mouseX; prevMouseY = mouseY; mouseDragging = true;
 }
 
-void switchToMode(char i, int x){ // Switch Between Raytracing, Photon Mapping Views
+public void switchToMode(char i, int x){ // Switch Between Raytracing, Photon Mapping Views
   if      (i=='1' || x<230) {view3D = false; lightPhotons = false; resetRender(); drawInterface();}
   else if (i=='2' || x<283) {view3D = false; lightPhotons = true;  resetRender(); drawInterface();}
   else if (i=='3' || x<513) {view3D = true; resetRender(); drawInterface();}
 }
-static void main(String[] passedArgs) {
+  static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Processing" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
