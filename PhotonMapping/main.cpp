@@ -4,10 +4,13 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include "PhotonMap.h"
+
 
 using namespace std;
 using namespace pm;
 
+bool changed = true;
 int mainWin, subWin1, subWin2, currentWindow;
 int mouseX = 0;
 int mouseY = 0;
@@ -25,6 +28,43 @@ color strokeColor (0,0,0);
 color fillColor   (255,255,255);
 
 bool emitDone = false;
+
+int resolution = 512;
+int nrTypes = 2;
+vector<int> nrObjects = {3,5};
+vector<float> gOrigin = {0.0,0.0,0.0};
+vector<float> Light = {0.0,1.2,3.75};
+vector<vector<float> > spheres = {{1.0,0.0,4.0,0.5}, {-0.6,-1.0,4.5,0.5}, {0.0,1.0,4.5,0.3}};
+vector<vector<float>> planes  = {{0, 1.5},{1, -1.5},{0, -1.5},{1, 1.5},{2,5.0}};
+
+
+int nrPhotons = 400;
+int nrBounces = 3;
+float sqRadius = 1.0;
+float exposure = 30.0;
+vector<vector<int> > numPhotons = {{0,0,0},{0,0,0,0,0}};
+
+
+// Maximum photon number
+int PHOTON_NUM = nrPhotons;
+vector<vector<PhotonMap* > > photons(2,vector<PhotonMap* >(5));
+bool stop = false;
+
+bool gIntersect = false;
+int gType;  //  Type of the Intersected Object (Sphere or Plane)
+int gIndex; //  Index of the Intersected Object
+float gSqDist, gDist = -1.0;    //  Distance from Ray Origin to Intersection
+vector<float> gPoint = {0.0, 0.0, 0.0}; //  The Intersection point
+
+bool empty = true;
+bool mode3D = true;
+int pRow, pCol, pIteration, pMax;
+bool odd(int x) {return x % 2 != 0;}
+
+
+int prevMouseX = -9999, prevMouseY = -9999, sphereIndex = -1;
+float s = 130.0;
+bool mouseDragging = false;
 
 float min(float a, float b) {
     return a <= b ? a : b;
@@ -154,45 +194,6 @@ void background (const color& c) {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-
-
-int resolution = 512;
-int nrTypes = 2;
-vector<int> nrObjects = {3,5};
-vector<float> gOrigin = {0.0,0.0,0.0};
-vector<float> Light = {0.0,1.2,3.75};
-vector<vector<float> > spheres = {{1.0,0.0,4.0,0.5}, {-0.6,-1.0,4.5,0.5}, {0.0,1.0,4.5,0.3}};
-vector<vector<float>> planes  = {{0, 1.5},{1, -1.5},{0, -1.5},{1, 1.5},{2,5.0}};
-
-
-int nrPhotons = 400;
-int nrBounces = 3;
-float sqRadius = 0.7;
-float exposure = 30.0;
-vector<vector<int> > numPhotons = {{0,0,0},{0,0,0,0,0}};
-
-//  photon map, [type][index][photon][photon_info][]
-vector<vector<vector<vector<vector<float> > > > > photons
-(2,vector<vector<vector<vector<float> > > >
- (6, vector<vector<vector<float> > >
-  (5000,vector<vector<float> >
-   (3, vector<float>(3)))));
-
-bool gIntersect = false;
-int gType;  //  Type of the Intersected Object (Sphere or Plane)
-int gIndex; //  Index of the Intersected Object
-float gSqDist, gDist = -1.0;    //  Distance from Ray Origin to Intersection
-vector<float> gPoint = {0.0, 0.0, 0.0}; //  The Intersection point
-
-bool empty = true;
-bool mode3D = true;
-int pRow, pCol, pIteration, pMax;
-bool odd(int x) {return x % 2 != 0;}
-
-
-int prevMouseX = -9999, prevMouseY = -9999, sphereIndex = -1;
-float s = 130.0;
-bool mouseDragging = false;
 void mouseReleased() {
     prevMouseX = -9999;
     prevMouseY = -9999;
@@ -256,18 +257,18 @@ float lightDiffuse(vector<float> const &N, vector<float> const &P){
     return dot3(N,L);
 }
 
-vector<float> sphereNormal(int idx, vector<float>& P){
+vector<float> sphereNormal(int idx, const vector<float>& P){
     return normalize3(sub3(P,spheres[idx]));
 }
 
-vector<float> planeNormal(int idx, vector<float>& P, vector<float>& O){
+vector<float> planeNormal(int idx, const vector<float>& P, vector<float>& O){
     int axis = (int) planes[idx][0];
     vector<float> N = {0.0,0.0,0.0};
     N[axis] = O[axis] - planes[idx][1];
     return normalize3(N);
 }
 
-vector<float> surfaceNormal(int type, int index, vector<float>& P, vector<float>& Inside){
+vector<float> surfaceNormal(int type, int index, const vector<float>& P, vector<float>& Inside){
     if (type == 0) {return sphereNormal(index,P);}
     else           {return planeNormal(index,P,Inside);}
 }
@@ -296,22 +297,22 @@ vector<float> reflect(vector<float>& ray, vector<float>& fromPoint){
 
 
 //Photon Mapping
-vector<float> gatherPhotons(vector<float>& p, int type, int id){
+vector<float> gatherPhotons(const vector<float>& p, int type, int id){
     vector<float> energy = {0.0,0.0,0.0};
     vector<float> N = surfaceNormal(type, id, p, gOrigin);
+
     for (int i = 0; i < numPhotons[type][id]; i++){
-        if (gatedSqDist3(p,photons[type][id][i][0],sqRadius)){
-            float weight = max(0.0f, -dot3(N, photons[type][id][i][1] ));
-            weight *= (1.0 - sqrt(gSqDist)) / exposure;
-            energy = add3(energy, mul3c(photons[type][id][i][2], weight));
-        }}
+        photons[type][id]->irradiance_estimate(energy, p, N, sqRadius, 100);
+        energy[0] /= 50;
+        energy[1] /= 50;
+        energy[2] /= 50;
+//                printf("Energy %f %f %f\n", energy[0], energy[1], energy[2]);
+    }
     return energy;
 }
 
 void storePhoton(int type, int id, vector<float>& location, vector<float>& direction, vector<float>& energy){
-    photons[type][id][numPhotons[type][id]][0] = location;
-    photons[type][id][numPhotons[type][id]][1] = direction;
-    photons[type][id][numPhotons[type][id]][2] = energy;
+    photons[type][id]->store(energy, location, direction);
     numPhotons[type][id]++;
 }
 
@@ -343,20 +344,22 @@ vector<float> computePixelColor(float x, float y){
 
         rgb = gatherPhotons(gPoint,gType,gIndex);
     }
+
     return rgb;
 }
 
-void drawPhoton(vector<float> const &rgb, vector<float> const &p, bool mode){
+void drawPhoton(float rgb[], float p[], bool mode){
+//    void drawPhoton(vector<float> const &rgb, vector<float> const &p, bool mode){
     if (mode && p[2] > 0.0){
 
         int x = (resolution/2) + (int)(resolution *  p[0]/p[2]);
         int y = (resolution/2) + (int)(resolution * -p[1]/p[2]);
         if (y <= resolution) {
             strokeColor = color(255.0*rgb[0],255.0*rgb[1],255.0*rgb[2]);
-//            glutSetWindow(subWin2);
+            //            glutSetWindow(subWin2);
             drawPoint(x,y);
-//            glutSetWindow(subWin2);
-//            drawPoint(x,y);
+            //            glutSetWindow(subWin2);
+            //            drawPoint(x,y);
         }
 
     }
@@ -364,14 +367,12 @@ void drawPhoton(vector<float> const &rgb, vector<float> const &p, bool mode){
 
 
 void emitPhotons(){
-
-
     emitDone = false;
     for (int t = 0; t < nrTypes; t++)
         for (int i = 0; i < nrObjects[t]; i++)
             numPhotons[t][i] = 0;
 
-      for (int i = 0; i < nrPhotons; i++){
+    for (int i = 0; i < nrPhotons; i++){
         int bounces = 1;
         vector<float> rgb = {1.0,1.0,1.0};
         vector<float> ray = normalize3( rand3(1.0) );
@@ -384,11 +385,19 @@ void emitPhotons(){
 
         raytrace(ray, prevPoint);    //Trace the Photon's Path
 
+        float rgbArr[3];
+        float pArr[3];
         while (gIntersect && bounces <= nrBounces){
             gPoint = add3( mul3c(ray,gDist), prevPoint);
             rgb = mul3c (rgb, 1.0/sqrt(bounces));
             storePhoton(gType, gIndex, gPoint, ray, rgb);
-            drawPhoton(rgb, gPoint, mode3D);
+            rgbArr[0] = rgb[0];
+            rgbArr[1] = rgb[1];
+            rgbArr[2] = rgb[2];
+            pArr[0] = gPoint[0];
+            pArr[1] = gPoint[1];
+            pArr[2] = gPoint[2];
+            drawPhoton(rgbArr, pArr, mode3D);
             shadowPhoton(ray);
             ray = reflect(ray,prevPoint); //Bounce the Photon
             raytrace(ray, gPoint);        //Trace It to Next Location
@@ -398,6 +407,16 @@ void emitPhotons(){
     }
 
     emitDone = true;
+
+    for (int i = 0; i < 3; i++) {
+        photons[0][i]->balance();
+//        photons[0][i]->scale_photon_power(1.0/numPhotons[0][i]);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        photons[1][i]->balance();
+//        photons[1][i]->scale_photon_power(1.0/numPhotons[1][i]);
+    }
 }
 
 void display1 () {
@@ -411,15 +430,30 @@ void display2 () {
 }
 
 void renderAll() {
-//        printf("all ");
+    //        printf("all ");
     display1();
     display2();
     glutPostRedisplay();
 }
 
 void reset() {
+    stop = true;
+    for (int i = 0; i < 3; i++) {
+        if (photons[0][i] != NULL) {
+            delete photons[0][i];
+        }
+        photons[0][i] = new PhotonMap(PHOTON_NUM);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        if (photons[0][i] != NULL) {
+            delete photons[0][i];
+        }
+        photons[1][i] = new PhotonMap(PHOTON_NUM);
+    }
     pRow=0; pCol=0; pIteration=1; pMax=2;
     empty=true;
+    stop = false;
     if (!mode3D) emitPhotons();
     glutPostRedisplay();
 }
@@ -429,7 +463,6 @@ void render(){
     vector<float> rgb = {0.0,0.0,0.0};
 
     while (iterations < (mouseDragging ? 1024 : max(pMax, 256) )){
-//        printf("%d %d %d %d\n", pIteration, pRow, pCol, pMax);
         if (pCol >= pMax) {
             pRow++;
             pCol = 0;
@@ -456,6 +489,7 @@ void render(){
 }
 
 void mousePressed(){
+    changed = true;
     sphereIndex = 3;
     vector<float> mouse3 = {(mouseX - resolution/2)/s, -(mouseY - resolution/2)/s, 0.5f*(spheres[0][2] + spheres[1][2])};
     if (gatedSqDist3(mouse3,spheres[0],spheres[0][3])) sphereIndex = 0;
@@ -502,7 +536,7 @@ static void init () {
 
 void display () {
     glutSetWindow(mainWin);
-//    glutSwapBuffers();
+    //    glutSwapBuffers();
 }
 
 
@@ -525,7 +559,7 @@ void display_scene () {
 
 
 
-            render();
+    render();
 
 
     glutSwapBuffers() ;
@@ -533,6 +567,8 @@ void display_scene () {
 
 
 void display_photon () {
+    if (!changed && !mouseDragging) return;
+
     glLoadIdentity();
 
     gluLookAt (width/4.0, height/2.0, (height/2.0) / tan(M_PI*60.0 / 360.0),
@@ -547,33 +583,34 @@ void display_photon () {
 
     glMatrixMode(GL_MODELVIEW);
 
-   if (empty){
-       strokeColor = 0;
-       fillColor = 0;
-       rect(0,0,resolution-1,resolution-1);
-       emitPhotons();
-       empty = false;
-   }
+    if (empty){
+        strokeColor = 0;
+        fillColor = 0;
+        rect(0,0,resolution-1,resolution-1);
+        emitPhotons();
+        empty = false;
+    }
 
     int a = 0,b = 0;
 
-        for (int i = 0; i < 3; i++) {
-            a += numPhotons[0][i];
-            for (int j = 0; j < numPhotons[0][i]; j++) {
-                drawPhoton(photons[0][i][j][0], photons[0][i][j][2], true);
-            }
-
+    for (int i = 0; i < 3; i++) {
+        a += numPhotons[0][i];
+        for (int j = 0; j < numPhotons[0][i]; j++) {
+            drawPhoton(photons[0][i]->getPhotons()[j].power, photons[0][i]->getPhotons()[j].pos, true);
+//            drawPhoton(photons[0][i][j][0], photons[0][i][j][2], true);
         }
 
-        for (int i = 0; i < 5; i++) {
-            b += numPhotons[1][i];
-            for (int j = 0; j < numPhotons[1][i]; j++) {
-                drawPhoton(photons[0][i][j][0], photons[0][i][j][2], true);
-            }
+    }
 
+    for (int i = 0; i < 5; i++) {
+        b += numPhotons[1][i];
+        for (int j = 0; j < numPhotons[1][i]; j++) {
+            drawPhoton(photons[1][i]->getPhotons()[j].power, photons[1][i]->getPhotons()[j].pos, true);
         }
 
-//    printf("%d %d\n", a,b);
+    }
+
+    if (changed) changed = false;
 
     glutSwapBuffers() ;
 }
@@ -604,7 +641,9 @@ static void reshape (int wid, int hgt)
 
 
 void refresh (int) {
-    renderAll();
+    if (!stop) {
+        renderAll();
+    }
     glutTimerFunc (1000/frameRate, refresh, 0);
 
 }
@@ -648,12 +687,14 @@ static void keyboard (unsigned char ch, int x, int y) {
 
     } else if (ch=='w') {
         sqRadius += 0.1;
-        printf("%f\n", sqRadius);
+        printf("Radius: %f\n", sqRadius);
+        changed = true;
         reset();
     } else if (ch=='s') {
         sqRadius -= 0.1;
         if (sqRadius < 0.1) sqRadius = 0.1;
-        printf("%f\n", sqRadius);
+        changed = true;
+        printf("Radius: %f\n", sqRadius);
         reset();
     }
 }
@@ -668,32 +709,46 @@ static void special (int ch, int x, int y) {
             nrBounces -= 1;
             if (nrBounces < 1) nrBounces = 1;
             printf("Bounce time limit: %d\n", nrBounces);
+            changed = true;
             reset();
             break;
         case GLUT_KEY_UP:
             nrPhotons += 100;
             printf("Photon amount: %d\n", nrPhotons);
+            changed = true;
             reset();
             break;
         case GLUT_KEY_RIGHT:
             nrBounces += 1;
             printf("Bounce time limit: %d\n", nrBounces);
+            changed = true;
             reset();
             break;
         case GLUT_KEY_DOWN:
             nrPhotons -= 100;
             if (nrPhotons < 0) nrPhotons = 0;
             printf("Photon amount: %d\n", nrPhotons);
+            changed = true;
             reset();
             break;
     }
 
 }
 
+void initVars() {
+    for (int i = 0; i < 3; i++) {
+        photons[0][i] = new PhotonMap(PHOTON_NUM);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        photons[1][i] = new PhotonMap(PHOTON_NUM);
+    }
+}
+
 int main (int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
-//    glutTimerFunc (1000/frameRate, refresh, 0);
+    //    glutTimerFunc (1000/frameRate, refresh, 0);
 
 
     glutInitWindowPosition(50, 100);
@@ -708,32 +763,26 @@ int main (int argc, char **argv) {
     glutMouseFunc (mouse);
     glutKeyboardFunc (keyboard);
     glutSpecialFunc(special);
-//
-//    glutInitWindowPosition(resolution + 50, 100);
-//    glutInitWindowSize (resolution, resolution);
-//    subWin2 = glutCreateWindow("Photon Visualization");
-//    glutDisplayFunc(display_photon);
-//    glutMotionFunc (mousemotion);
-//    glutMouseFunc (mouse);
-//    glutKeyboardFunc (keyboard);
-//    glutSpecialFunc(special);
-
-        subWin1 = glutCreateSubWindow(mainWin, 0, 0, resolution, resolution);
-        glutDisplayFunc(display1);
-        glutMotionFunc (mousemotion);
-        glutMouseFunc (mouse);
-        glutKeyboardFunc (keyboard);
-        glutSpecialFunc(special);
 
 
-        subWin2 = glutCreateSubWindow(mainWin, resolution, 0, resolution, resolution);
-        glutDisplayFunc(display2);
-        glutMotionFunc (mousemotion);
-        glutMouseFunc (mouse);
-        glutKeyboardFunc (keyboard);
-        glutSpecialFunc(special);
-
+    subWin1 = glutCreateSubWindow(mainWin, 0, 0, resolution, resolution);
+    glutDisplayFunc(display1);
+    glutMotionFunc (mousemotion);
+    glutMouseFunc (mouse);
+    glutKeyboardFunc (keyboard);
+    glutSpecialFunc(special);
+    
+    
+    subWin2 = glutCreateSubWindow(mainWin, resolution, 0, resolution, resolution);
+    glutDisplayFunc(display2);
+    glutMotionFunc (mousemotion);
+    glutMouseFunc (mouse);
+    glutKeyboardFunc (keyboard);
+    glutSpecialFunc(special);
+    
     glutSetWindow(subWin1);
+
+    initVars();
     emitPhotons();
     reset();
     glutMainLoop();
