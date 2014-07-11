@@ -22,7 +22,7 @@ int keyCode;
 int width;
 int height;
 
-int frameRate = 60;
+int frameRate = 1;
 
 color strokeColor (0,0,0);
 color fillColor   (255,255,255);
@@ -136,39 +136,6 @@ color::color(double gray, double alpha){
 
 static std::vector<unsigned> sphereIdx;
 
-
-void quad (double x0, double y0,
-           double x1, double y1,
-           double x2, double y2,
-           double x3, double y3)
-{
-    GLdouble vertices[] = {
-        x0, y0,
-        x1, y1,
-        x2, y2,
-        x3, y3
-    };
-    // activate and specify pointer to vertex array
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(2, GL_DOUBLE, 0, vertices);
-
-    if (fillColor.rgba[3] > 0) {
-        // See if filled triangle is required
-        glColor4ubv (fillColor.rgba);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDrawArrays(GL_QUADS,0,4);
-    }
-    if (strokeColor.rgba[3] > 0) {
-        // See if outline triangle is required
-        glColor4ubv (strokeColor.rgba);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_QUADS,0,4);
-    }
-    // deactivate vertex arrays after drawing
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-}
-
 /// Draws a point.
 void drawPoint (double x, double y, double z = 0)
 {
@@ -181,9 +148,33 @@ void drawPoint (double x, double y, double z = 0)
     }
 }
 
-void pm::rect (double x, double y, double a, double b)
+void pm::rect (int x, int y, int w, int h)
 {
-    quad (x, y, x+a, y, x+a, y+b, x, y+b);
+    GLint vertices[] = {
+        x, y,
+        x+w, y,
+        x+w, y+h,
+        x, y+h
+    };
+
+    // activate and specify pointer to vertex array
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(2, GL_INT, 0, vertices);
+
+    if (fillColor.rgba[3] > 0) {
+        // See if filled triangle is required
+        glColor4ubv (fillColor.rgba);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_QUADS,0,4);
+    }
+//    if (strokeColor.rgba[3] > 0) {
+//        // See if outline triangle is required
+//        glColor4ubv (strokeColor.rgba);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//        glDrawArrays(GL_QUADS,0,4);
+//    }
+    // deactivate vertex arrays after drawing
+    glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void background (const color& c) {
@@ -474,24 +465,34 @@ void render(){
         }
 
         bool pNeedsDrawing = (pIteration == 1 || odd(pRow) || (!odd(pRow) && odd(pCol)));
-        x = pCol * (resolution/pMax); y = pRow * (resolution/pMax);
+        x = pCol * (resolution/pMax);
+        y = pRow * (resolution/pMax);
         pCol++;
 
         if (pNeedsDrawing){
+            printf("it:%d, pRow:%d, pCol:%d\n", pIteration, pRow, pCol);
             iterations++;
             rgb = mul3c( computePixelColor(x,y), 255.0);
-            strokeColor = color(rgb[0],rgb[1],rgb[2]); fillColor = color(rgb[0],rgb[1],rgb[2]);
-            rect(x,y,(resolution/pMax)-1,(resolution/pMax)-1);
+            strokeColor = color(rgb[0],rgb[1],rgb[2]);
+            fillColor = color(rgb[0],rgb[1],rgb[2]);
+            rect(x, y, (resolution/pMax),(resolution/pMax));
         }
     }
 
-    if (pRow == resolution-1) {empty = false;}
+    if (pRow == resolution-1) {
+        empty = false;
+    }
 }
 
 void mousePressed(){
     changed = true;
     sphereIndex = 3;
-    vector<float> mouse3 = {(mouseX - resolution/2)/s, -(mouseY - resolution/2)/s, 0.5f*(spheres[0][2] + spheres[1][2])};
+    vector<float> mouse3 = {
+        (mouseX - resolution/2)/s,
+        -(mouseY - resolution/2)/s,
+        0.5f*(spheres[0][2] + spheres[1][2])
+    };
+
     if (gatedSqDist3(mouse3,spheres[0],spheres[0][3])) sphereIndex = 0;
     else if (gatedSqDist3(mouse3,spheres[1],spheres[1][3])) sphereIndex = 1;
     else if (gatedSqDist3(mouse3,spheres[2],spheres[2][3])) sphereIndex = 2;
@@ -557,10 +558,7 @@ void display_scene () {
 
     glMatrixMode(GL_MODELVIEW);
 
-
-
     render();
-
 
     glutSwapBuffers() ;
 }

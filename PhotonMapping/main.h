@@ -11,13 +11,6 @@
 #include <cmath>
 #include <cassert>
 
-
-/// Epsilon constant
-#ifndef EPS
-#include <limits>
-#define EPS std::numeric_limits<double>::epsilon()
-#endif
-
 namespace pm {
     /// Color class
     struct color {
@@ -27,7 +20,7 @@ namespace pm {
         color (double gray, double alpha = 255);
     };
 
-    void rect (double x, double y, double a, double b);
+    void rect (int x, int y, int a, int b);
 
 }
 
